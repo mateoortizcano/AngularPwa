@@ -22,5 +22,19 @@
         ]
       }
     }
+  ],
+  "datagroups": [
+    {
+      "name": "RedditAPI",
+      "urls": [
+        "https://reddit.com/r/**"
+      ],
+      "cacheConfig": {
+        "srategy": "freshness",
+        "maxAge": "1d",
+        "maxSize": 1000,
+        "timeout": "3s"
+      }
+    }
   ]
 }
