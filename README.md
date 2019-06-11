@@ -23,3 +23,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 ```css
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 ```
+
+
+Agregar firebase al proyecto: (Links de instalación y configuración)
+
+https://github.com/angular/angularfire2
