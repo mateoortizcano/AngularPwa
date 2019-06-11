@@ -7,8 +7,8 @@
   "prefer_related_applications": false,
   "name": "pwaPrueba",
   "short_name": "pwaPrueba",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "theme_color": "#19d15f",
+  "background_color": "#b6f442",
   "display": "standalone",
   "scope": "/",
   "icons": [
