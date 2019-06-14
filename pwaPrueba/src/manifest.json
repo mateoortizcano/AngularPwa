@@ -2,7 +2,7 @@
   "dir": "ltr",
   "lang": "es",
   "orientation": "any",
-  "start_url": "http://127.0.0.1:8887",
+  "start_url": "https://platzinotas-ad51b.firebaseapp.com/",
   "related_applications": [],
   "prefer_related_applications": false,
   "name": "pwaPrueba",
@@ -11,6 +11,7 @@
   "background_color": "#b6f442",
   "display": "standalone",
   "scope": "/",
+  "gcm_sender_id": "103953800507",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

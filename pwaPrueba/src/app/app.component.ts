@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { NotesService } from 'src/services/notes.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -15,15 +16,26 @@ export class AppComponent implements OnInit {
   notes: any = [];
   private readonly createdNote = 'Nota creada';
   private readonly deletedNote = 'Nota eliminada';
+  loggedIn = false;
 
   constructor(private swUpdate: SwUpdate, private notesService: NotesService, private _snackBar: MatSnackBar,
-    public dialog: MatDialog) {
-    this.notesService.getNotes().valueChanges().subscribe(
-      (notes) => {
-        this.notes = notes;
-        console.log(this.notes);
+    public dialog: MatDialog, private authService: AuthService) {
+    this.authService.isLoggued().subscribe((result) => {
+      if (result && result.uid) {
+        this.loggedIn = true;
+        this.getNotes();
+      } else {
+        this.loggedIn = false;
       }
-    );
+    }, (error) => {
+      this.loggedIn = false;
+    });
+  }
+
+  private getNotes() {
+    this.notesService.getNotes().valueChanges().subscribe((receivedNotes) => {
+      this.notes = receivedNotes;
+    });
   }
 
   ngOnInit(): void {
@@ -59,5 +71,9 @@ export class AppComponent implements OnInit {
     this.notesService.deleteNote(id).then(() => {
       this.openSnackbar(this.deletedNote);
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
