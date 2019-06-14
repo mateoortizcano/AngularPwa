@@ -17,12 +17,14 @@ export class AppComponent implements OnInit {
   private readonly createdNote = 'Nota creada';
   private readonly deletedNote = 'Nota eliminada';
   loggedIn = false;
+  authUserId = {};
 
   constructor(private swUpdate: SwUpdate, private notesService: NotesService, private _snackBar: MatSnackBar,
     public dialog: MatDialog, private authService: AuthService) {
     this.authService.isLoggued().subscribe((result) => {
       if (result && result.uid) {
         this.loggedIn = true;
+        this.authUserId = result.uid;
         this.getNotes();
       } else {
         this.loggedIn = false;
@@ -33,7 +35,7 @@ export class AppComponent implements OnInit {
   }
 
   private getNotes() {
-    this.notesService.getNotes().valueChanges().subscribe((receivedNotes) => {
+    this.notesService.getNotes(this.authUserId).valueChanges().subscribe((receivedNotes) => {
       this.notes = receivedNotes;
     });
   }
@@ -51,6 +53,7 @@ export class AppComponent implements OnInit {
     if (!note.id) {
       note.id = Date.now();
     }
+    note.userId = this.authUserId;
     this.notesService.createNote(note).then(() => {
       this.note = {};
       this.openSnackbar(this.createdNote);
