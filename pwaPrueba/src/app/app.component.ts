@@ -3,7 +3,9 @@ import { SwUpdate } from '@angular/service-worker';
 import { NotesService } from 'src/services/notes.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { AuthService } from 'src/services/auth.service';
+import { MessagingService } from 'src/services/messaging.service';
 
+const fiveSeconds = 5000;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,9 +20,11 @@ export class AppComponent implements OnInit {
   private readonly deletedNote = 'Nota eliminada';
   loggedIn = false;
   authUserId = {};
+  message: any = {};
 
-  constructor(private swUpdate: SwUpdate, private notesService: NotesService, private _snackBar: MatSnackBar,
-    public dialog: MatDialog, private authService: AuthService) {
+  constructor(private swUpdate: SwUpdate, private notesService: NotesService,
+    private _snackBar: MatSnackBar, public dialog: MatDialog,
+    private authService: AuthService, private messaging: MessagingService) {
     this.authService.isLoggued().subscribe((result) => {
       if (result && result.uid) {
         this.loggedIn = true;
@@ -32,6 +36,17 @@ export class AppComponent implements OnInit {
     }, (error) => {
       this.loggedIn = false;
     });
+    this.pushNotification();
+  }
+
+  private pushNotification() {
+    this.messaging.getPermission();
+    this.messaging.receiveMessage();
+    this.messaging.currentMessage.subscribe(message => {
+      if (message != null) {
+        this.openSnackbar(message.notification.body);
+      }
+    });
   }
 
   private getNotes() {
@@ -41,7 +56,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Este método ayuda a que se actualice la versión del service worker de manera automática cuando se realicen actualizaciones
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe(() => {
         window.location.reload();
@@ -62,7 +76,7 @@ export class AppComponent implements OnInit {
 
   private openSnackbar(message) {
     this._snackBar.open(message, null, {
-      duration: 2000,
+      duration: fiveSeconds,
     });
   }
 

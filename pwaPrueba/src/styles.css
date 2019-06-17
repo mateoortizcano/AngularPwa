@@ -25,3 +25,7 @@
 .note-cards {
     margin: 5px;
 }
+
+mat-form-field {
+    margin-right: 12px;
+}

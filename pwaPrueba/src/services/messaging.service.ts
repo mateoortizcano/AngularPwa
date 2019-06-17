@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
 import { take } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import 'firebase/messaging';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class MessagingService {
 
   messaging = firebase.messaging();
   currentMessage = new BehaviorSubject(null);
+  browserAuthTokenNode = 'fcmTokens/';
 
   constructor(private db: AngularFireDatabase, private afAuth: AngularFireAuth) { }
 
@@ -23,7 +25,7 @@ export class MessagingService {
       }
 
       const data = { [user.uid]: token };
-      this.db.object('fcmTokens/').update(data);
+      this.db.object(this.browserAuthTokenNode).update(data);
     });
   }
 
@@ -34,7 +36,6 @@ export class MessagingService {
         return this.messaging.getToken();
       })
       .then(token => {
-        console.log(token);
         this.updateToken(token);
       })
       .catch((err) => {
@@ -42,11 +43,16 @@ export class MessagingService {
       });
   }
 
+  getNewtoken() {
+    this.messaging.getToken().then(token => {
+      debugger;
+      this.updateToken(token);
+    });
+  }
+
   receiveMessage() {
     this.messaging.onMessage((payload) => {
-      console.log('Message received.', payload);
       this.currentMessage.next(payload);
     });
-
   }
 }
